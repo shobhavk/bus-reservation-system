@@ -4,3 +4,6 @@ sqlalchemy
 databases[Mysql]
 mysql-connector-python
 
+#for loading environment variables  #new
+python-dotenv
+
