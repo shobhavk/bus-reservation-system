@@ -5,7 +5,7 @@ from app.api import database, database_manager, schema
 from app.api.model import BusRoute
 
 routes = APIRouter(
-    prefix="/busroutes",
+    prefix="/bus_routes",
     tags=['BusRoutes']
 )
 
