@@ -7,3 +7,4 @@ mysql-connector-python
 #for loading environment variables  #new
 python-dotenv
 httpx #for restapi call
+aio_pika #rabbitmq

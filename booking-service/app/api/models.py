@@ -17,3 +17,5 @@ class Booking(Base):
     booking_date = Column(Date)
     user_id = Column(Integer)
     status = Column(String(20), default='Pending')
+    total_amount = Column(Integer)
+    price = Column(Integer)

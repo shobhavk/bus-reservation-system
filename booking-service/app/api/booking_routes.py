@@ -5,6 +5,10 @@ from app.api import database, database_manager, schemas
 from app.api.models import Booking
 import requests
 import json
+from aio_pika import connect, Message
+from typing import Dict
+import asyncio
+from fastapi.encoders import jsonable_encoder
 
 routes = APIRouter(
     prefix="/bookings",
@@ -14,11 +18,31 @@ routes = APIRouter(
 get_db = database.get_db
 
 @routes.post('/', status_code=status.HTTP_201_CREATED)
-def create(request: schemas.Booking, db: Session= Depends(get_db)):
-    get_response = requests.get(f"http://localhost:8000/inventory/search/{request.bus_route_id}/")
-    inventory = json.loads(get_response.content.decode('utf-8'))
-    if inventory['available_seats'] > request.number_of_seats:
-        return database_manager.create(request, db)
-    else:  
-        return "cannot create"
-    # return database_manager.create(request, db)
+async def create(request: schemas.Booking, db: Session= Depends(get_db)):
+    # bus_route_response = requests.get(f"http://localhost:8001/bus_routes/{request.bus_route_id}")
+    # bus_route = json.loads(bus_route_response.content.decode('utf-8'))
+    price = 100
+    booking = database_manager.create(request, db, price)
+    booking_json_compatible = jsonable_encoder(booking)
+    await send_rabbitmq(booking_json_compatible)
+    return 'hello'
+    # inventory_response = requests.get(f"http://localhost:8000/inventory/search/{request.bus_route_id}/")
+    # inventory = json.loads(inventory_response.content.decode('utf-8'))
+    # if inventory['available_seats'] > request.number_of_seats:
+    #     booking = database_manager.create(request, db, bus_route['price'])
+    #     await send_rabbitmq(booking)
+    #     return 'hello'
+    # else:  
+    #     return "cannot create"
+    
+async def send_rabbitmq(msg ={}):
+    connection = await connect(host='localhost')
+
+    channel = await connection.channel()
+
+    await channel.default_exchange.publish(
+        Message(json.dumps(msg).encode("utf-8")),
+        routing_key = "booking_created"
+    )
+
+    await connection.close()
