@@ -1,31 +1,29 @@
 import asyncio
 from aio_pika import connect, IncomingMessage
 import json
-from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.orm import Session
-from app.api import database, database_manager, schema
-from app.api.model import Payment
-
-get_db = database.get_db
+from app.api import database
 
 async def on_message(message: IncomingMessage):
     txt = message.body.decode("utf-8")
     booking = json.loads(txt)
     request = {
         'booking_id': booking['id'],
-        'date_of_payment': booking['booking_date']
+        'date_of_payment': booking['booking_date'],
+        'number_of_seats': booking['number_of_seats'],
+        'bus_route_id': booking['bus_route_id'],
+        'user_id': booking['user_id']
     }
-    database_manager.create(request, Session= Depends(get_db))
-
+    
+    await database.raw_sql(request)
 
 async def main(loop):
     connection = await connect(host='localhost', loop = loop)
 
     channel = await connection.channel()
 
-    queue = await channel.declare_queue("booking_created")
-
-    await queue.consume(on_message, no_ack = True)
+    queue1 = await channel.declare_queue("booking_created")
+    await queue1.consume(on_message, no_ack = True)
 
 
 if __name__ == "__main__":
