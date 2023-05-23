@@ -3,6 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from databases import Database
 from app.api.config import settings
+import warnings
 
 SQLALCHEMY_DATABASE_URL = settings.DATABASE_URL
 
@@ -17,3 +18,13 @@ def get_db():
         yield db
     finally:
         db.close()
+
+async def raw_sql(request):
+    with engine.connect() as con:
+        try:
+            sql_update = "UPDATE bookings SET status=%s WHERE id=%s"
+            val = ('confirmed', request['booking_id'])
+            # data = ({'booking_id': request['booking_id'], 'last_updated': request['booking_date'], })
+            con.execute(sql_update, val)
+        except:
+            warnings.warn("We somehow failed in a DB operation and auto-rollbacking...")

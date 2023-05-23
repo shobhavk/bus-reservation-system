@@ -8,3 +8,4 @@ mysql-connector-python
 python-dotenv
 httpx #for restapi call
 aio_pika #rabbitmq
+databases #rawsql
