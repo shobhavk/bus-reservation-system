@@ -6,6 +6,7 @@ env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
 
 class Settings:
+    
     MYSQL_USER : str = os.getenv("MYSQL_USER")
     MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD")
     MYSQL_SERVER : str = os.getenv("MYSQL_SERVER","localhost")

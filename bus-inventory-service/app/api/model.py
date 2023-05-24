@@ -9,3 +9,4 @@ class BusInventory(Base):
     bus_route_id = Column(Integer)
     available_seats = Column(Integer)
     last_updated = Column(Date)
+

@@ -19,3 +19,11 @@ class Booking(Base):
     status = Column(String(20), default='Pending')
     total_amount = Column(Integer)
     price = Column(Integer)
+    passenger = relationship("Passenger", back_populates="bookings")
+ 
+class Passenger(Base):
+    __tablename__ = "passengers"
+    id = Column(Integer, primary_key=True, index=True)
+    booking_id = Column(Integer, ForeignKey("bookings.id"))
+    user_id = Column(Integer)
+    bookings = relationship("Booking", back_populates="passenger")

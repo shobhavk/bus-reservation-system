@@ -12,7 +12,8 @@ async def on_message(message: IncomingMessage):
         'number_of_seats': data['number_of_seats'],
         'last_updated': data['date_of_payment'],
         'user_id': data['user_id'],
-        'booking_id': data['booking_id']
+        'booking_id': data['booking_id'],
+        'payment_status': data['payment_status']
     }
     await database.raw_sql(request)
 

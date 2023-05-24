@@ -4,6 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from databases import Database
 from app.api.config import settings
 import warnings
+from sqlalchemy.sql import text
 
 SQLALCHEMY_DATABASE_URL = settings.DATABASE_URL
 
@@ -24,7 +25,18 @@ async def raw_sql(request):
         try:
             sql_update = "UPDATE bookings SET status=%s WHERE id=%s"
             val = ('confirmed', request['booking_id'])
-            # data = ({'booking_id': request['booking_id'], 'last_updated': request['booking_date'], })
             con.execute(sql_update, val)
+            data = ({'booking_id': request['booking_id'], 'user_id': request['user_id']})
+            passenger = text("""INSERT INTO passengers(booking_id, user_id) VALUES (:booking_id, :user_id)""")
+            con.execute(passenger, data)
         except:
             warnings.warn("We somehow failed in a DB operation and auto-rollbacking...")
+
+async def rollback_booking(request):
+    with engine.connect() as con:
+            try:
+                sql_delete = "DELETE FROM bookings WHERE id=%s"
+                val = (request['booking_id'])
+                con.execute(sql_delete, val)
+            except:
+                warnings.warn("We somehow failed in a DB operation and auto-rollbacking...")    

@@ -31,7 +31,10 @@ async def raw_sql(request):
             data = ({'booking_id': request['booking_id'], 'date_of_payment': request['date_of_payment']})
             statement = text("""INSERT INTO payments(booking_id, date_of_payment) VALUES (:booking_id, :date_of_payment)""")
             con.execute(statement, data)
+            request['payment_status'] = 'success'
+            print("from dbatapayment request", request)
             await send_rabbitmq(request, 'payment_created')
         except:
             warnings.warn("We somehow failed in a DB operation and auto-rollbacking...")
+            request['payment_status'] = 'failed'
             await send_rabbitmq(request, 'payment_failed')
