@@ -3,6 +3,7 @@ from aio_pika import connect, IncomingMessage, Message
 import json
 from sqlalchemy.orm import Session
 from app.api import database, database_manager, schema
+import os
 
 async def on_message(message: IncomingMessage):
     txt = message.body.decode("utf-8")
@@ -18,7 +19,8 @@ async def on_message(message: IncomingMessage):
     await database.raw_sql(request)
 
 async def main(loop):
-    connection = await connect(host='localhost', loop = loop)
+    rabbit_host = os.getenv("AMQP_HOST")
+    connection = await connect(rabbit_host, loop = loop)
 
     channel = await connection.channel()
 

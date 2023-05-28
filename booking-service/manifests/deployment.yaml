@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fast-api
+  name: bus-routes
   labels:
-    app: fast-api
+    app: bus-routes
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
-      app: fast-api
+      app: bus-routes
   template:
     metadata:
       labels:
-        app: fast-api
+        app: bus-routes
     spec:
       containers:
-      - name: fast-api
-        image: sshobha379/helloapp:v1
+      - name: bus-routes
+        image: sshobha379/routes:v1
         ports:
         - containerPort: 8000
         resources:
@@ -27,4 +27,4 @@ spec:
             memory: 400Mi
         envFrom:
           - configMapRef:
-              name: mysql-config
+              name: mysqld-config

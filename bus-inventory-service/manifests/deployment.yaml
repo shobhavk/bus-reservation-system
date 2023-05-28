@@ -5,7 +5,7 @@ metadata:
   labels:
     app: bus-inventory
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: bus-inventory
@@ -16,9 +16,9 @@ spec:
     spec:
       containers:
       - name: bus-inventory
-        image: sshobha379/bus_inventory:v1
+        image: sshobha379/inventory:v1
         ports:
-        - containerPort: 8000
+        - containerPort: 8001
         resources:
           requests:
             cpu: 200m

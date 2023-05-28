@@ -6,11 +6,14 @@ import os
 # load_dotenv(dotenv_path=env_path)
 
 class Settings:
-    MYSQL_USER : str = os.getenv("MYSQL_USER")
+    MYSQL_USER = os.getenv("MYSQL_USER")
     MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD")
-    MYSQL_SERVER : str = os.getenv("MYSQL_SERVER","localhost")
-    MYSQL_PORT : str = os.getenv("MYSQL_PORT",3306) # default MYSQL port is 5432
-    MYSQL_DB : str = os.getenv("MYSQL_DB")
+    # MYSQL_SERVER = 'host.docker.internal'
+    MYSQL_SERVER = os.getenv("MYSQL_SERVER")
+    MYSQL_PORT = 3306 # default MYSQL port is 3306
+    MYSQL_DB = os.getenv("MYSQL_DB")
     DATABASE_URL = f"mysql+mysqlconnector://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_SERVER}:{MYSQL_PORT}/{MYSQL_DB}"
-
+    print(DATABASE_URL,f"This is user {MYSQL_USER} {MYSQL_PASSWORD} {MYSQL_PORT} {MYSQL_DB}")
 settings = Settings()
+
+
