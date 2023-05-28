@@ -9,3 +9,5 @@ python-dotenv
 httpx #for restapi call
 aio_pika #rabbitmq
 databases #rawsql
+# python3-requests
+requests

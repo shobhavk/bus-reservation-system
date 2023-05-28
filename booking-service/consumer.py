@@ -18,7 +18,7 @@ async def on_message(message: IncomingMessage):
         await database.rollback_booking(request)
 
 async def main(loop):
-    connection = await connect(host='localhost', loop = loop)
+    connection = await connect(host='rabbitmq', loop = loop)
 
     channel = await connection.channel()
 

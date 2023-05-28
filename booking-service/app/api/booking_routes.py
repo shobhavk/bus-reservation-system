@@ -19,24 +19,26 @@ get_db = database.get_db
 
 @routes.post('/', status_code=status.HTTP_201_CREATED)
 async def create(request: schemas.Booking, db: Session= Depends(get_db)):
-    # bus_route_response = requests.get(f"http://localhost:8001/bus_routes/{request.bus_route_id}")
-    # bus_route = json.loads(bus_route_response.content.decode('utf-8'))
-    price = 100
-    booking = database_manager.create(request, db, price)
-    booking_json_compatible = jsonable_encoder(booking)
-    await send_rabbitmq(booking_json_compatible)
-    return 'hello'
-    # inventory_response = requests.get(f"http://localhost:8000/inventory/search/{request.bus_route_id}/")
-    # inventory = json.loads(inventory_response.content.decode('utf-8'))
-    # if inventory['available_seats'] > request.number_of_seats:
-    #     booking = database_manager.create(request, db, bus_route['price'])
-    #     await send_rabbitmq(booking)
-    #     return 'hello'
-    # else:  
-    #     return "cannot create"
+    bus_route_response = requests.get(f"http://bus-routes:8000/bus_routes/{request.bus_route_id}")
+    bus_route = json.loads(bus_route_response.content.decode('utf-8'))
+    print("wow busroutes", bus_route)
+    # price = 100
+    # booking = database_manager.create(request, db, price)
+    # booking_json_compatible = jsonable_encoder(booking)
+    # await send_rabbitmq(booking_json_compatible)
+    inventory_response = requests.get(f"http://bus-inventory:8001/inventory/search/{request.bus_route_id}/")
+    inventory = json.loads(inventory_response.content.decode('utf-8'))
+    print("wow inventory", inventory)
+    if inventory['available_seats'] > request.number_of_seats:
+        booking = database_manager.create(request, db, bus_route['price'])
+        booking_json_compatible = jsonable_encoder(booking)
+        await send_rabbitmq(booking_json_compatible)
+        return booking
+    else:  
+        return "cannot create"
     
 async def send_rabbitmq(msg ={}):
-    connection = await connect(host='localhost')
+    connection = await connect(host='rabbitmq')
 
     channel = await connection.channel()
 
@@ -46,3 +48,4 @@ async def send_rabbitmq(msg ={}):
     )
 
     await connection.close()
+

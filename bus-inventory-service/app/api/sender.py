@@ -4,8 +4,7 @@ import json
 import os
 
 async def send_rabbitmq(msg ={}):
-    rabbit_host = os.getenv("AMQP_HOST")
-    connection = await connect(host=rabbit_host)
+    connection = await connect(host='rabbitmq')
 
     channel = await connection.channel()
     await channel.default_exchange.publish(

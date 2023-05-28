@@ -3,6 +3,7 @@ from aio_pika import connect, IncomingMessage
 import json
 from sqlalchemy.orm import Session
 from app.api import database
+import os
 
 async def on_message(message: IncomingMessage):
     txt = message.body.decode("utf-8")
@@ -18,7 +19,7 @@ async def on_message(message: IncomingMessage):
     await database.raw_sql(request)
 
 async def main(loop):
-    connection = await connect(host='localhost', loop = loop)
+    connection = await connect(host='rabbitmq', loop = loop)
 
     channel = await connection.channel()
 

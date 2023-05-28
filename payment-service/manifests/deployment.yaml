@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: booking
+  name: payment
   labels:
-    app: booking
+    app: payment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: booking
+      app: payment
   template:
     metadata:
       labels:
-        app: booking
+        app: payment
     spec:
       containers:
-      - name: booking
-        image: sshobha379/booking:v7
+      - name: payment
+        image: sshobha379/payment:v1
         ports:
-        - containerPort: 8003
+        - containerPort: 8002
         resources:
           requests:
             cpu: 200m

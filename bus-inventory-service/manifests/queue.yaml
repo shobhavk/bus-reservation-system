@@ -1,24 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: booking
+  name: inventory-queue
   labels:
-    app: booking
+    app: inventory-queue
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: booking
+      app: inventory-queue
   template:
     metadata:
       labels:
-        app: booking
+        app: inventory-queue
     spec:
       containers:
-      - name: booking
-        image: sshobha379/booking:v7
-        ports:
-        - containerPort: 8003
+      - name: inventory-queue
+        image: sshobha379/inventory-queue:v2
         resources:
           requests:
             cpu: 200m

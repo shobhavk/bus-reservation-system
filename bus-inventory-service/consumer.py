@@ -19,8 +19,7 @@ async def on_message(message: IncomingMessage):
     await database.raw_sql(request)
 
 async def main(loop):
-    rabbit_host = os.getenv("AMQP_HOST")
-    connection = await connect(rabbit_host, loop = loop)
+    connection = await connect(host='rabbitmq', loop = loop)
 
     channel = await connection.channel()
 
