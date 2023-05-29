@@ -18,3 +18,36 @@ def create(request: schemas.Booking, db: Session, price: int):
     db.commit()
     db.refresh(new_booking)
     return new_booking
+
+def show(id: int, db: Session):
+    booking = db.query(models.Booking).filter(models.Booking.id == id).first()
+    if not booking:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Booking with the id {id} is not available")
+    return booking
+
+def index(db: Session):
+    booking = db.query(models.Booking).all()
+    return booking
+
+def destroy(id: int, db: Session):
+    booking = db.query(models.Booking).filter(models.Booking.id == id)
+
+    if not booking.first():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Booking  with id {id} not found")
+
+    booking.delete(synchronize_session=False)
+    db.commit()
+    return 'done'
+
+def update(id: int, request: schemas.Booking, db: Session):
+    booking = db.query(models.Booking).filter(models.Booking.id == id)
+
+    if not booking.first():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Booking  with id {id} not found")
+
+    booking.update(dict(request))
+    db.commit()
+    return 'updated'
